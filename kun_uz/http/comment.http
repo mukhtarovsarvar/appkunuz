@@ -1,8 +1,8 @@
 
 ### create
-POST http://localhost:8080/coment
+POST https://mykun-uz.herokuapp.com/comment
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjUxODExMjQ3LCJleHAiOjE2NTE4MTQ4NDcsImlzcyI6Im1hemdpIHByb2R1Y3Rpb24iLCJyb2xlIjoiQURNSU4ifQ.y-w1qjZ_GhNf3cCOouTIFfdplc8mkOx1V9DgSxMW_Xg
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjUyMjUwOTkzLCJleHAiOjE2NTIyNTQ1OTMsImlzcyI6Im1hemdpIHByb2R1Y3Rpb24iLCJyb2xlIjoiVVNFUiJ9.MZfdUAPG6HTRkAOyAt04zMenmJmrc4Dk_Ee90caKTso
 
 {
   "content": "ijodga omad zo'r  chiqipti",

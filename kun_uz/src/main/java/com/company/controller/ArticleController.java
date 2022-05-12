@@ -128,7 +128,13 @@ public class ArticleController {
     }
 
     @DeleteMapping("/adm/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") Integer id, HttpServletRequest request) {
+    public ResponseEntity<?> delete(@PathVariable("id") Integer id, HttpServletRequest request)
+
+
+
+
+
+    {
         Integer pId = JwtUtil.getIdFromHeader(request, ProfileRole.ADMIN);
         log.info("delete  article from pId "+pId+" aricle id : {}",id);
         return ResponseEntity.ok(articleService.delete(id));

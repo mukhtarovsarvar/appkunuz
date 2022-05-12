@@ -19,4 +19,13 @@ Content-Type: application/json
   "password": "12345678"
 }
 
+###
+POST https://mykun-uz.herokuapp.com/auth/login
+Content-Type:  application/json
+
+{
+  "email": "mukhtarovsarvarbek@gmail.com",
+  "password": "sar123"
+}
+
 
