@@ -1,64 +1,69 @@
 package com.company.service;
 
-import com.company.dto.EmailDTO;
+
+import com.company.dto.EmailDto;
 import com.company.entity.EmailEntity;
-import com.company.enums.EmailType;
+import com.company.exception.AppBadRequestException;
 import com.company.exception.ItemNotFoundException;
 import com.company.repository.EmailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 public class EmailService {
     @Autowired
-    private JavaMailSender javaMailSender;
+    private JavaMailSender mailSender;
     @Autowired
-    private EmailRepository emailRepository;
+    private EmailRepository repository;
 
-    public void send(String toEmail, String title, String content) {
-        SimpleMailMessage simple = new SimpleMailMessage();
-//        MimeMailMessage message = new MimeMailMessage();
-        simple.setTo(toEmail);
-        simple.setSubject(title);
-        simple.setText(content);
-        javaMailSender.send(simple);
+    public void send(String toEmail,String title,String content){
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            message.setSubject(title);
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(toEmail);
+            helper.setText(content, true);
+            create(toEmail,title,content);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new AppBadRequestException(e.getMessage());
+        }
+    }
 
+    public  void create(String toEmail, String title, String content){
         EmailEntity entity = new EmailEntity();
         entity.setToEmail(toEmail);
-        entity.setType(EmailType.VERIFICATION);
-        emailRepository.save(entity);
+        repository.save(entity);
     }
-    public List<EmailDTO> paginationList(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "sendDate"));
 
-        List<EmailDTO> dtoList = new ArrayList<>();
-        emailRepository.findAll(pageable).stream().forEach(entity -> {
-            dtoList.add(toDTO(entity));
+    public List<EmailDto> getList(int page, int size) {
+        List<EmailDto> list = new LinkedList<>();
+        repository.findAll(PageRequest.of(page,size)).forEach(emailEntity -> {
+            list.add(toDo(emailEntity));
         });
-
-        return dtoList;
+        return list;
     }
+    private EmailDto toDo(EmailEntity emailEntity) {
+        EmailDto dto = new EmailDto();
+        dto.setToEmail(emailEntity.getToEmail());
+        dto.setId(emailEntity.getId());
 
-    public Boolean delete(Integer id) {
-        emailRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Not found!"));
-
-        emailRepository.deleteById(id);
-        return true;
-    }
-    private EmailDTO toDTO(EmailEntity entity) {
-        EmailDTO dto = new EmailDTO();
-        dto.setId(entity.getId());
-        dto.setToEmail(entity.getToEmail());
-        dto.setType(entity.getType());
-        dto.setSendDate(entity.getCreateDate());
         return dto;
+    }
+
+    public String delete(Integer id) {
+        repository.findById(id).orElseThrow(() ->{
+            throw new ItemNotFoundException("Item not found");
+        });
+        repository.deleteById(id);
+        return "Success";
     }
 }

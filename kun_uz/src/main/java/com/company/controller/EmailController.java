@@ -21,7 +21,7 @@ public class EmailController {
                                   @RequestParam(value = "size", defaultValue = "5") int size,
                                   HttpServletRequest request) {
         JwtUtil.getIdFromHeader(request, ProfileRole.ADMIN);
-        return ResponseEntity.ok(emailService.paginationList(page, size));
+        return ResponseEntity.ok(emailService.getList(page, size));
     }
 
     @DeleteMapping("/adm/delete/{id}")
